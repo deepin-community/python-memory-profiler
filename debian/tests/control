@@ -1,0 +1,9 @@
+Test-Command: set -e
+ ; cp -r test/ Makefile "$AUTOPKGTEST_TMP"
+ ; for py in $(py3versions -r 2>/dev/null)
+ ; do cd "$AUTOPKGTEST_TMP"
+ ; echo "Testing with $py:"
+ ; PYTHON=$py make test
+ ; done
+Depends: python3-all,
+         python3-memory-profiler

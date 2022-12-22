@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE=1
+export PYBUILD_NAME=memory-profiler
+
+export PYBUILD_DISABLE_python3=test
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_test:
+	PYBUILD_SYSTEM=custom PYBUILD_BEFORE_TEST="cp -rf test/ Makefile {build_dir}" \
+		PYBUILD_TEST_ARGS="cd {build_dir}; PYTHON={interpreter} make test" \
+		PYBUILD_AFTER_TEST="rm -rf {build_dir}/test/ {build_dir}/Makefile" \
+		LC_ALL=C.UTF-8 dh_auto_test
+
+override_dh_auto_install:
+	dh_auto_install
+	mv $(CURDIR)/debian/python3-memory-profiler/usr/bin/mprof \
+	    $(CURDIR)/debian/python3-memory-profiler/usr/bin/python3-mprof
